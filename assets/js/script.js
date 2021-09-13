@@ -61,16 +61,23 @@ $(".list-group").on("click", "span", function() {
     // swap out elements
     $(this).replaceWith(dateInput);
 
+    // load datepick from jQuery UI on dateInput
+    dateInput.datepicker({
+        minDate: 0,
+        onClose: function() { $(this).trigger("change"); }
+    });
+
     // automatically focus on new element
     dateInput.trigger("focus");
 });
 
 // value of due date was changed
-$(".list-group").on("blur", "input[type='text']", function() {
+$(".list-group").on("change", "input[type='text']", function() {
     // get current text
     var date = $(this)
         .val()
         .trim();
+
 
     // get the parent ul's id attribute
     var status = $(this)
@@ -237,6 +244,13 @@ $("#trash").droppable({
         console.log("out");
     }
 });
+
+// load datepick from jQuery UI on create task modal
+$("#modalDueDate").datepicker({
+    minDate: 0,
+});
+
+
 
 // load tasks for the first time
 loadTasks();
