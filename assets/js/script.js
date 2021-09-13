@@ -13,10 +13,51 @@ var createTask = function(taskText, taskDate, taskList) {
     // append span and p element to parent li
     taskLi.append(taskSpan, taskP);
 
+    // check due date
+    auditTask(taskLi);
 
     // append to ul list on the page
     $("#list-" + taskList).append(taskLi);
 };
+
+const auditTask = function(taskEl) {
+    // console.log(taskEl)
+    let taskDate = $(taskEl).find("span").text().trim();
+
+    // convert to moment object at 5:00pm
+    // var time = moment(taskDate, "L").set("hour", 17);
+
+    // using Luxon to create a similar date object set to 5pm
+    let ltime = luxon.DateTime.fromFormat(taskDate.replaceAll('/', ' ') + " 17:00:00", "MM dd yyyy H:mm:ss");
+
+
+    // remove any old classes from element
+    $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
+
+
+
+    /* with Moment */
+    /*
+    // apply new class if task is near/over due date
+    if (moment().isAfter(time)) {
+        $(taskEl).addClass("list-group-item-danger");
+    } else if (Math.abs(moment().diff(time, "days")) <= 2) {
+        $(taskEl).addClass("list-group-item-warning");
+    }
+*/
+    /* With Luxon */
+    //get the difference between now and the task date in days
+    let tdiff = -luxon.DateTime.now().diff(ltime, 'days').days;
+
+    // apply new class if task is near/over due date
+    if (tdiff < 0) { // if days till due date are more then 0
+        $(taskEl).addClass("list-group-item-danger");
+    } else if (tdiff <= 2.2) { // if less then 2.2 days till due date
+        $(taskEl).addClass("list-group-item-warning");
+    }
+
+}
+
 
 var loadTasks = function() {
     tasks = JSON.parse(localStorage.getItem("tasks"));
@@ -63,7 +104,7 @@ $(".list-group").on("click", "span", function() {
 
     // load datepick from jQuery UI on dateInput
     dateInput.datepicker({
-        minDate: 0,
+        // minDate: 0,
         onClose: function() { $(this).trigger("change"); }
     });
 
@@ -101,6 +142,9 @@ $(".list-group").on("change", "input[type='text']", function() {
 
     // replace input with span element
     $(this).replaceWith(taskSpan);
+
+    // Pass task's <li> element into auditTask() to check new due date
+    auditTask($(taskSpan).closest(".list-group-item"));
 });
 
 // task text was clicked to be edited
@@ -217,7 +261,6 @@ $(".card .list-group").sortable({
                 date: date,
             });
 
-
         });
         // trim down list's ID to match object property
         var arrName = $(this)
@@ -249,7 +292,6 @@ $("#trash").droppable({
 $("#modalDueDate").datepicker({
     minDate: 0,
 });
-
 
 
 // load tasks for the first time
