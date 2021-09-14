@@ -35,7 +35,6 @@ const auditTask = function(taskEl) {
     $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
 
 
-
     /* with Moment */
     /*
     // apply new class if task is near/over due date
@@ -104,7 +103,7 @@ $(".list-group").on("click", "span", function() {
 
     // load datepick from jQuery UI on dateInput
     dateInput.datepicker({
-        // minDate: 0,
+        minDate: 0,
         onClose: function() { $(this).trigger("change"); }
     });
 
@@ -229,15 +228,19 @@ $(".card .list-group").sortable({
     helper: "clone",
     activate: function(event) {
         // console.log("activate", this);
+        $(this).addClass("dropover ");
     },
     deactivate: function(event) {
         // console.log("deactivate", this);
+        $(this).removeClass("dropover");
     },
     over: function(event) {
         // console.log("over", event.target);
+        $(this).addClass("dropover-active");
     },
     out: function(event) {
         //console.log("out", event.target);
+        $(this).removeClass("dropover-active");
     },
     update: function(event) {
 
@@ -292,7 +295,12 @@ $("#trash").droppable({
 $("#modalDueDate").datepicker({
     minDate: 0,
 });
-
+//every 5 minutes update re audit tasks for due dates
+setInterval(function() {
+    $(".card .list-group-item").each(function(index, el) {
+        auditTask(el);
+    });
+}, 72000);
 
 // load tasks for the first time
 loadTasks();
