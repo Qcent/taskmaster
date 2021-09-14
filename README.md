@@ -13,6 +13,6 @@ This project will put heavy emphasis on using `jQuery` and other 3rd party APIs 
 
 ## Usage
 
-![The App in all its glory](./assests/images/app-screenshot.png)
+![The App in all its glory](./assets/images/app-screenshot.png)
 
 Just click the "+ Add Task" button to get started creating a list of *TASKS* for yourself or others to complete. The intuitive user interface provides Drag and Drop functionality along with one-click editing of tasks, allowing for smooth and streamlined goal accomplishing.
